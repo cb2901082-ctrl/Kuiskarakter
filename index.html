@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Personality Test | Siapa Kamu?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .option-card:hover { transform: translateY(-2px); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen text-slate-800">
+
+    <div class="max-w-2xl mx-auto px-6 py-10">
+        <div id="home" class="text-center py-12">
+            <span class="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest">Update 2026</span>
+            <h1 class="text-5xl font-extrabold mt-6 mb-4 text-slate-900 leading-tight">Siapa Karakter <span class="text-indigo-600">Aslimu?</span></h1>
+            <p class="text-lg text-slate-600 mb-10">Temukan apakah kamu seorang Introvert yang bijak atau Extrovert yang mempesona melalui 10 pertanyaan mendalam.</p>
+            <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-2xl shadow-lg shadow-indigo-200 transition-all transform hover:scale-105">Mulai Tes Sekarang</button>
+        </div>
+
+        <div id="quiz" class="hidden bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+            <div class="flex justify-between items-center mb-8">
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest" id="progress-text">Pertanyaan 1/10</div>
+                <div class="w-2/3 bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-500 h-full transition-all duration-500" style="width: 10%"></div>
+                </div>
+            </div>
+
+            <h2 id="question" class="text-2xl font-bold mb-8 text-slate-800 leading-snug">Memuat pertanyaan...</h2>
+            
+            <div class="space-y-4" id="options">
+                </div>
+        </div>
+
+        <div id="result" class="hidden text-center bg-white p-10 rounded-3xl shadow-2xl border border-indigo-100">
+            <p class="text-indigo-500 font-bold tracking-widest uppercase text-sm mb-2">Analisis Selesai</p>
+            <h2 id="res-title" class="text-4xl font-black mb-4 text-slate-900">Karakter Kamu</h2>
+            <div id="res-badge" class="inline-block px-6 py-2 rounded-full text-white font-bold mb-6 text-sm italic">Hasil</div>
+            
+            <div class="bg-indigo-50 p-6 rounded-2xl mb-8">
+                <p id="res-desc" class="text-slate-700 text-lg leading-relaxed"></p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="location.reload()" class="bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition">Ulangi Tes</button>
+                <button onclick="shareResult()" class="bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition flex items-center justify-center gap-2">
+                    Bagikan ke WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Bagaimana cara terbaikmu memulihkan energi setelah hari yang panjang?", options: [
+                { text: "Nongkrong bareng teman-teman", type: "E", score: "sanguinis" },
+                { text: "Menyendiri dengan hobi tenang", type: "I", score: "melankolis" },
+                { text: "Tidur atau istirahat di rumah", type: "I", score: "flegmatis" },
+                { text: "Melakukan aktivitas produktif", type: "E", score: "koleris" }
+            ]},
+            { q: "Di sebuah pesta, kamu biasanya...", options: [
+                { text: "Jadi pusat perhatian/cerita", type: "E", score: "sanguinis" },
+                { text: "Hanya bicara dengan yang kukenal", type: "I", score: "melankolis" },
+                { text: "Membantu tuan rumah/diam saja", type: "I", score: "flegmatis" },
+                { text: "Mencari relasi penting", type: "E", score: "koleris" }
+            ]},
+            { q: "Apa reaksi pertamamu saat ada masalah mendadak?", options: [
+                { text: "Curhat ke orang terdekat", type: "E", score: "sanguinis" },
+                { text: "Menganalisis detail penyebabnya", type: "I", score: "melankolis" },
+                { text: "Tetap tenang & hindari keributan", type: "I", score: "flegmatis" },
+                { text: "Langsung ambil tindakan solusi", type: "E", score: "koleris" }
+            ]},
+            { q: "Bagaimana caramu mengambil keputusan penting?", options: [
+                { text: "Ikuti perasaan/insting saat itu", type: "E", score: "sanguinis" },
+                { text: "Pertimbangkan data & logika matang", type: "I", score: "melankolis" },
+                { text: "Cari kesepakatan orang banyak", type: "I", score: "flegmatis" },
+                { text: "Cepat & fokus pada hasil", type: "E", score: "koleris" }
+            ]},
+            { q: "Apa hal yang paling membuatmu merasa lelah?", options: [
+                { text: "Kesepian atau tidak ada kegiatan", type: "E", score: "sanguinis" },
+                { text: "Berada di keramaian terlalu lama", type: "I", score: "melankolis" },
+                { text: "Terjebak dalam konflik besar", type: "I", score: "flegmatis" },
+                { text: "Pekerjaan yang lambat/tidak beres", type: "E", score: "koleris" }
+            ]},
+            { q: "Apa gaya berpakaian favoritmu?", options: [
+                { text: "Menonjol dan berwarna", type: "E", score: "sanguinis" },
+                { text: "Rapi dan teratur", type: "I", score: "melankolis" },
+                { text: "Simpel dan nyaman", type: "I", score: "flegmatis" },
+                { text: "Berwibawa dan kuat", type: "E", score: "koleris" }
+            ]},
+            { q: "Temanmu menangis, apa yang kamu lakukan?", options: [
+                { text: "Menghiburnya agar tertawa lagi", type: "E", score: "sanguinis" },
+                { text: "Mendengarkan dengan serius", type: "I", score: "melankolis" },
+                { text: "Menemaninya dalam diam", type: "I", score: "flegmatis" },
+                { text: "Beri solusi agar dia bangkit", type: "E", score: "koleris" }
+            ]},
+            { q: "Bagaimana cara kamu menghadapi perubahan?", options: [
+                { text: "Senang, tantangan baru!", type: "E", score: "sanguinis" },
+                { text: "Agak waspada & butuh rencana", type: "I", score: "melankolis" },
+                { text: "Mengikuti arus saja", type: "I", score: "flegmatis" },
+                { text: "Cari cara agar tetap unggul", type: "E", score: "koleris" }
+            ]},
+            { q: "Apa tujuan hidup utamamu?", options: [
+                { text: "Menikmati hidup & bahagia", type: "E", score: "sanguinis" },
+                { text: "Memberi dampak lewat karya sempurna", type: "I", score: "melankolis" },
+                { text: "Hidup damai & punya teman setia", type: "I", score: "flegmatis" },
+                { text: "Sukses & punya pengaruh besar", type: "E", score: "koleris" }
+            ]},
+            { q: "Saat sedang liburan, kamu tipe yang...", options: [
+                { text: "Cari tempat viral & foto-foto", type: "E", score: "sanguinis" },
+                { text: "Buat jadwal perjalanan rapi", type: "I", score: "melankolis" },
+                { text: "Santai di pinggir pantai/kamar", type: "I", score: "flegmatis" },
+                { text: "Cari aktivitas yang memacu adrenalin", type: "E", score: "koleris" }
+            ]}
+        ];
+
+        let currentIdx = 0;
+        let scores = { sanguinis: 0, koleris: 0, melankolis: 0, flegmatis: 0 };
+        let countIE = { I: 0, E: 0 };
+
+        function startQuiz() {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('quiz').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('question').innerText = q.q;
+            document.getElementById('progress-text').innerText = `Pertanyaan ${currentIdx + 1}/${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIdx+1)/questions.length)*100}%`;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-card w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 font-semibold text-slate-700 shadow-sm bg-white";
+                btn.innerText = opt.text;
+                btn.onclick = () => handleAnswer(opt.type, opt.score);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(type, scoreType) {
+            countIE[type]++;
+            scores[scoreType]++;
+            currentIdx++;
+            if (currentIdx < questions.length) showQuestion();
+            else calculateResult();
+        }
+
+        function calculateResult() {
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+
+            const dominant = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            const ePerc = (countIE.E / questions.length) * 100;
+            const iPerc = 100 - ePerc;
+            
+            const results = {
+                sanguinis: { title: "The Life of the Party", color: "bg-yellow-500", desc: "Kamu adalah sosok yang ceria, optimis, dan penuh energi. Kehadiranmu selalu dinanti karena kamu jago menghidupkan suasana." },
+                koleris: { title: "The Strategic Leader", color: "bg-red-500", desc: "Kamu sangat fokus pada target, tegas, dan berani. Kamu adalah pemimpin alami yang tidak suka membuang waktu." },
+                melankolis: { title: "The Wise Perfectionist", color: "bg-indigo-600", desc: "Kamu sangat detail, kreatif, dan punya perasaan yang dalam. Kamu tipe pemikir yang selalu memastikan semuanya sempurna." },
+                flegmatis: { title: "The Peaceful Supporter", color: "bg-teal-500", desc: "Kamu adalah pembawa damai yang tenang dan sabar. Kamu pendengar yang baik dan sangat setia pada teman-temanmu." }
+            };
+
+            const res = results[dominant];
+            document.getElementById('res-title').innerText = res.title;
+            document.getElementById('res-badge').innerText = `${ePerc}% Extrovert | ${iPerc}% Introvert`;
+            document.getElementById('res-badge').classList.add(res.color);
+            document.getElementById('res-desc').innerText = res.desc;
+        }
+
+        function shareResult() {
+            const title = document.getElementById('res-title').innerText;
+            const text = `Hasil tes kepribadianku: ${title}! Coba cek karakter kamu juga di sini:`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`);
+        }
+    </script>
+</body>
+</html
