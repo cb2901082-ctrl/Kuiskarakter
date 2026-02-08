@@ -181,22 +181,6 @@
             const text = `Hasil tes kepribadianku: ${title}! Coba cek karakter kamu juga di sini:`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`);
         }
-    </script>
-    <button onclick="kirimWA()" style="background-color: #25D366; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer;">
-  Kirim Hasil ke WhatsApp Pembuat
-</button>
-
-<script>
-function kirimWA() {
-  const nama = document.getElementById('inputNama').value; // Pastikan id input nama kamu benar
-  const hasil = document.getElementById('teksHasil').innerText; // Pastikan id teks hasil kamu benar
-  const nomorWA = "087798811503"; // <--- MASUKKAN NOMOR WA KAMU DI SINI (awali dengan 62)
-  
-  const pesan = `Halo! Nama saya ${nama}. Hasil kuis karakter saya adalah: ${hasil}`;
-  const url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
-  
-  window.open(url, '_blank');
-}
 </script>
 
 </body>
